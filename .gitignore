@@ -1,0 +1,8 @@
+node_modules/
+dist/
+
+# Monorepo/package-specific ignores
+web/node_modules/
+web/dist/
+backend/node_modules/
+backend/dist/
