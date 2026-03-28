@@ -584,6 +584,23 @@ export default function JobDetail() {
     }
   };
 
+  const handleSendEstimatePdfWhatsApp = async () => {
+    if (!estimate || !job) return;
+    setWhatsappLoading('estimate-pdf');
+    try {
+      const file = await buildEstimatePdfFile({ estimate, job, org });
+      const phone = normalizeIndianPhone(job.customer.phone);
+      const text = `Estimate ${estimate.estimateNumber} for vehicle ${job.vehicle.registrationNo}`;
+      await sharePdfViaWhatsApp(file, phone, text);
+      markStatus('sent');
+      setShowSendModal(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to prepare estimate PDF for WhatsApp.');
+    } finally {
+      setWhatsappLoading(null);
+    }
+  };
+
   // ── loading / error screens ───────────────────────────────────────────────────
 
   if (loading && !job) {
