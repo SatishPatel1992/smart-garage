@@ -21,7 +21,24 @@ import vehicleMakeRoutes from './routes/vehicleMakes.js';
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-app.use(cors({ origin: true, credentials: true }));
+/** Comma-separated frontend origins (e.g. https://app.onrender.com). If unset, reflect request Origin. */
+function corsOriginOption(): boolean | string[] {
+  const raw = process.env.CORS_ORIGINS;
+  if (!raw?.trim()) return true;
+  const list = raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return list.length ? list : true;
+}
+
+app.use(
+  cors({
+    origin: corsOriginOption(),
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
 
 app.use('/auth', authRoutes);

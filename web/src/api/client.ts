@@ -3,11 +3,9 @@
  * Uses VITE_API_URL or /api proxy (see vite.config proxy).
  */
 
-const getBaseUrl = (): string => {
-  const env = import.meta.env.VITE_API_URL;
-  if (env && typeof env === 'string' && env.trim()) return env.trim().replace(/\/$/, '');
-  return ''; // same origin; use Vite proxy /api -> backend
-};
+import { getApiBaseUrl } from '../config/api';
+
+const getBaseUrl = (): string => getApiBaseUrl();
 
 const API_PREFIX = '/api';
 
