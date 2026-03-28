@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma.js';
 import { requireAuth } from '../middleware/auth.js';
 
@@ -498,7 +499,7 @@ router.post('/:id/revisions', async (req: Request, res: Response): Promise<void>
         version,
         totalAmount,
         note: note ?? null,
-        linesSnapshot: linesSnapshot as unknown as Record<string, unknown>,
+        linesSnapshot: linesSnapshot as Prisma.InputJsonValue,
       },
     });
     // Update the estimate's current lines and total to the latest revision

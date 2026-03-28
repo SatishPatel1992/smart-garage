@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma.js';
 import { requireAuth } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -54,7 +55,7 @@ router.patch('/settings', requireRole('admin'), async (req: Request, res: Respon
       ...(address !== undefined && { address }),
       ...(phone !== undefined && { phone }),
       ...(gstin !== undefined && { gstin }),
-      settings: updatedSettings,
+      settings: updatedSettings as Prisma.InputJsonValue,
     },
   });
   res.json({ ok: true });

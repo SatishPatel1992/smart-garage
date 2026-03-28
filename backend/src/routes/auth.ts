@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { randomBytes } from 'crypto';
@@ -9,8 +9,8 @@ const router = Router();
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET ?? 'dev-access-secret-min-32-characters-long';
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? 'dev-refresh-secret-min-32-characters-long';
-const ACCESS_EXPIRY = process.env.JWT_ACCESS_EXPIRY ?? '24h';
-const REFRESH_EXPIRY = process.env.JWT_REFRESH_EXPIRY ?? '24h';
+const ACCESS_EXPIRY = (process.env.JWT_ACCESS_EXPIRY ?? '24h') as SignOptions['expiresIn'];
+const REFRESH_EXPIRY = (process.env.JWT_REFRESH_EXPIRY ?? '24h') as SignOptions['expiresIn'];
 
 const loginBody = z.object({
   email: z.string().email(),
