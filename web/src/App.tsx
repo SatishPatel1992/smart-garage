@@ -24,7 +24,40 @@ import ServiceReminders from './pages/ServiceReminders';
 import VehicleMakes from './pages/VehicleMakes';
 import PublicEstimate from './pages/PublicEstimate';
 
+/** Static hosts (Render, Vercel, etc.) do not run the Vite /api proxy; without VITE_API_URL, fetch hits the wrong origin and often returns 200 with an empty body. */
+function MissingApiUrlConfig() {
+  return (
+    <div className="page-content" style={{ maxWidth: 560, margin: '8vh auto' }}>
+      <div className="card">
+        <h1 className="page-title" style={{ fontSize: '1.25rem', marginBottom: 12 }}>
+          API URL not configured
+        </h1>
+        <p style={{ color: 'var(--text-muted)', marginBottom: 16, lineHeight: 1.5 }}>
+          This production build has no <code style={{ fontSize: '0.9em' }}>VITE_API_URL</code>. Requests were
+          going to this site&apos;s <code style={{ fontSize: '0.9em' }}>/api/…</code> path, which is not your
+          Express backend — you may see HTTP 200 with an empty response.
+        </p>
+        <p style={{ marginBottom: 12, lineHeight: 1.5 }}>
+          <strong>Render (static site):</strong> Environment → add{' '}
+          <code style={{ fontSize: '0.9em' }}>VITE_API_URL</code> = your <strong>Node</strong> service URL (e.g.{' '}
+          <code style={{ fontSize: '0.9em' }}>https://your-api.onrender.com</code>), no trailing slash. Trigger a
+          new deploy (Clear build cache if needed).
+        </p>
+        <p style={{ lineHeight: 1.5 }}>
+          <strong>Backend:</strong> set <code style={{ fontSize: '0.9em' }}>CORS_ORIGINS</code> to include this
+          frontend URL.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (import.meta.env.PROD && (!apiUrl || !String(apiUrl).trim())) {
+    return <MissingApiUrlConfig />;
+  }
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
